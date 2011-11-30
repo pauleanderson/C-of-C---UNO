@@ -1,4 +1,6 @@
 from random import randint, shuffle
+# Authors: Paul Anderson
+
 from graphics import *
 from string import ascii_letters
 import cards1
