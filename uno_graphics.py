@@ -92,6 +92,18 @@ class Player:
             card_strs.append(card.as_string())
         return self.name + ":" + "\t".join(card_strs)
 
+    def sort(self):
+        i = 0
+        j = 0
+        n = len(self.cards)
+        for j in range(n):
+           key = self.cards.pop(j)
+           i = j - 1
+           while (i >= 0 and (self.cards[i].color > key.color or
+                              (self.cards[i].color == key.color and self.cards[i].number > key.number))):
+              i = i -1
+           self.cards.insert(i+1,key)
+
 class Game:
     # Starts a new game with player 'name'
     # Creates three computer players
@@ -368,6 +380,11 @@ class Board:
                 self.p1.cards.insert(0,card)
                 self.draw_cards()
                 return "Shift Button Clicked"
+
+            elif self.sort_button.is_clicked(p):
+                self.p1.sort()
+                self.draw_cards()
+                return "Sort Button Clicked"
 
             elif self.reload_button.is_clicked(p):
                 return "Reload Button Clicked"
