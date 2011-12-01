@@ -1,5 +1,5 @@
 from random import randint, shuffle
-# Authors: Paul Anderson, Your name here
+# Authors: Paul Anderson, Clayton Turner, Patrick Brewer, Scott Ziegler,Your name here
 
 from graphics import *
 from string import ascii_letters
