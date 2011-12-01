@@ -5,30 +5,6 @@ from string import ascii_letters
 CARD_WIDTH = 10
 CARD_HEIGHT = 15
 
-# Creates a card from a string (e.g., green 1)
-def create_card(card_str):
-    if card_str.find("wild") != -1:
-        if card_str == "wild":
-            card = WildCard()
-        elif card_str == "wild draw 4":
-            card = WildCard()
-            card.is_draw_4 = True
-            
-    elif card_str.find("reverse") != -1:
-        color = card_str.split(" ")[0]
-        card = ReverseCard(color)
-    elif card_str.find("skip") != -1:
-        color = card_str.split(" ")[0]
-        card = SkipCard(color)
-    elif card_str.find("draw 2") != -1:
-        color = card_str.split(" ")[0]
-        card = Draw2Card(color)
-    else:
-        color = card_str.split(" ")[0]
-        number = int(card_str.split(" ")[1])
-        card = StandardCard(color,number)
-    return card
-
 class StandardCard:
    #Standard Card object constructor: requires color and number
     def __init__(self,c,n):

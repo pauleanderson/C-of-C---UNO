@@ -3,8 +3,7 @@ from random import randint, shuffle
 
 from graphics import *
 from string import ascii_letters
-import cards1
-import cards2
+import cards1, cards2, cards3, cards4, cards5, cards6, cards7, cards8, cards9, cards10, cards11, cards12, cards13, cards14, cards15
 
 CARDS = cards1 # By default, we'll use these cards
 
@@ -578,6 +577,32 @@ def main():
        CARDS = cards1
     elif cards_entry.getText().strip() == '2':
        CARDS = cards2
+    elif cards_entry.getText().strip() == '3':
+       CARDS = cards3
+    elif cards_entry.getText().strip() == '4':
+       CARDS = cards4
+    elif cards_entry.getText().strip() == '5':
+       CARDS = cards5
+    elif cards_entry.getText().strip() == '6':
+       CARDS = cards6
+    elif cards_entry.getText().strip() == '7':
+       CARDS = cards7
+    elif cards_entry.getText().strip() == '8':
+       CARDS = cards8
+    elif cards_entry.getText().strip() == '9':
+       CARDS = cards9
+    elif cards_entry.getText().strip() == '10':
+       CARDS = cards10
+    elif cards_entry.getText().strip() == '11':
+       CARDS = cards11
+    elif cards_entry.getText().strip() == '12':
+       CARDS = cards12
+    elif cards_entry.getText().strip() == '13':
+       CARDS = cards13
+    elif cards_entry.getText().strip() == '14':
+       CARDS = cards14
+    elif cards_entry.getText().strip() == '15':
+       CARDS = cards15
     else:
        CARDS = cards1
        
