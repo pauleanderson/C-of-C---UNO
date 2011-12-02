@@ -4,6 +4,7 @@ from random import randint, shuffle
 from graphics import *
 from string import ascii_letters
 import cards1, cards2, cards3, cards4, cards5, cards6, cards7, cards8, cards9, cards10, cards11, cards12, cards13, cards14, cards15
+import time
 
 CARDS = cards1 # By default, we'll use these cards
 
@@ -84,6 +85,17 @@ class Player:
                 return True
         return False
 
+    #Looks through the player's hand to see if any card matches the top card of the
+    #discard pile in color or number. If a card can be played, returns True
+    #If no card can be played, returns False.
+    def get_card_to_play(self,discard_pile):
+        discard_color = discard_pile[-1].color
+        discard_number = discard_pile[-1].number
+        for card in self.cards:
+            if card.color == discard_color or card.number == discard_number:
+                return card
+        return None
+
     #Returns the name of the player, and the player's hand, as a string
     def as_string(self):
         card_strs = []
@@ -120,6 +132,7 @@ class Game:
         self.board.create_blank_board()
         self.board.initialize_new_board()
         self.deal()
+        self.board.cp = self.p1
 
     #Deals out 7 cards to each player
     def deal(self):
@@ -346,27 +359,63 @@ class Board:
         p = self.win.getMouse()
         # Check to see if card was clicked
         for card in self.p1.cards:
-            if card.is_clicked(p):
+             if card.is_clicked(p):
                 # Reset the card positions
                 for i in range(len(self.p1.cards)):
-                    self.p1.cards[i].move_to(self.x_positions[i],20)
+                   self.p1.cards[i].move_to(self.x_positions[i],20)
                 
                 card.move(0,5)
                 self.card_selected = card
                 return "Card Clicked"
 
-            elif self.discard_pile[-1].is_clicked(p):
-                if self.card_selected != None:
-                    if self.check_card(self.discard_pile[-1],self.card_selected):
-                       self.discard_pile[-1].undraw()
-                       self.card_selected.move_to(50,50)
-                       self.p1.cards.remove(self.card_selected)
-                       self.discard_pile.append(self.card_selected)
-                       self.card_selected = None                    
-                       self.draw_cards()
-                       return "Card Played"
+        if self.discard_pile[-1].is_clicked(p):
+             if self.p1.name != self.cp.name:
+                return "Not your turn"
+             if self.card_selected != None:
+                 if self.check_card(self.discard_pile[-1],self.card_selected):
+                    self.discard_pile[-1].undraw()
+                    self.card_selected.move_to(50,50)
+                    self.p1.cards.remove(self.card_selected)
+                    self.discard_pile.append(self.card_selected)
+                    self.card_selected = None                    
+                    self.draw_cards()
+                    # Switch to next person
+                    time.sleep(1)
+                    while self.p2.can_play_card(self.discard_pile) == False:
+                        self.deal_one_card(self.p2)
+                    self.discard_pile[-1].undraw()
+                    card = self.p2.get_card_to_play(self.discard_pile)
+                    self.p2.cards.remove(card)
+                    self.discard_pile.append(card)
+                    self.text_p2.setText(self.p2.name + ": " + str(len(self.p2.cards)))
+                    card.draw(self.win)
+                    card.move_to(50,50)
+                     
+                    time.sleep(1)
+                    while self.p3.can_play_card(self.discard_pile) == False:
+                        self.deal_one_card(self.p3)
+                    self.discard_pile[-1].undraw()
+                    card = self.p3.get_card_to_play(self.discard_pile)
+                    self.p3.cards.remove(card)
+                    self.discard_pile.append(card)
+                    self.text_p3.setText(self.p3.name + ": " + str(len(self.p3.cards)))
+                    card.draw(self.win)
+                    card.move_to(50,50)
 
-                return "Discard Pile Clicked"
+                    time.sleep(1)
+                    while self.p4.can_play_card(self.discard_pile) == False:
+                        self.deal_one_card(self.p4)
+                    self.discard_pile[-1].undraw()
+                    card = self.p4.get_card_to_play(self.discard_pile)
+                    self.p4.cards.remove(card)
+                    self.discard_pile.append(card)
+                    self.text_p4.setText(self.p4.name + ": " + str(len(self.p4.cards)))
+                    card.draw(self.win)
+                    card.move_to(50,50)
+
+                    return "Card Played"
+
+             return "Discard Pile Clicked"
 
             elif self.draw_button.is_clicked(p):
                 if self.can_play_card(self.p1,self.discard_pile) == False:
@@ -409,31 +458,31 @@ class Board:
                     card = CARDS.StandardCard(color,i)
                     deck.append(card)
 
-        # Makes the standard wild card
-        for i in range(4):
-            card = CARDS.WildCard()
-            deck.append(card)
-
-        # Makes wild card that is a draw 4
-        for i in range(4):
-            card = CARDS.WildCard()
-            card.is_draw_4 = True
-            deck.append(card)
-            
-        # Makes Skips,Reverses, and Draw 2's 
-        for color in ['blue','green','red','yellow']:
-           card = CARDS.SkipCard(color)
-           deck.append(card)
-           card = CARDS.SkipCard(color)
-           deck.append(card)
-           card = CARDS.ReverseCard(color)
-           deck.append(card)
-           card = CARDS.ReverseCard(color)
-           deck.append(card)
-           card = CARDS.Draw2Card(color)
-           deck.append(card)
-           card = CARDS.Draw2Card(color)
-           deck.append(card)
+##        # Makes the standard wild card
+##        for i in range(4):
+##            card = CARDS.WildCard()
+##            deck.append(card)
+##
+##        # Makes wild card that is a draw 4
+##        for i in range(4):
+##            card = CARDS.WildCard()
+##            card.is_draw_4 = True
+##            deck.append(card)
+##            
+##        # Makes Skips,Reverses, and Draw 2's 
+##        for color in ['blue','green','red','yellow']:
+##           card = CARDS.SkipCard(color)
+##           deck.append(card)
+##           card = CARDS.SkipCard(color)
+##           deck.append(card)
+##           card = CARDS.ReverseCard(color)
+##           deck.append(card)
+##           card = CARDS.ReverseCard(color)
+##           deck.append(card)
+##           card = CARDS.Draw2Card(color)
+##           deck.append(card)
+##           card = CARDS.Draw2Card(color)
+##           deck.append(card)
            
         self.deck = deck
 
@@ -475,12 +524,15 @@ class Board:
 
     #Does the same thing as set_p1
     def set_p2(self,p2):
+        self.p2 = p2
         self.text_p2.setText(p2.name + ": " + str(len(p2.cards)))
 
     def set_p3(self,p3):
+        self.p3 = p3
         self.text_p3.setText(p3.name + ": " + str(len(p3.cards)))
 
     def set_p4(self,p4):
+        self.p4 = p4
         self.text_p4.setText(p4.name + ": " + str(len(p4.cards)))
 
     #Returns the game ID, the cards in the discard pile, and the cards in the deck as a string
