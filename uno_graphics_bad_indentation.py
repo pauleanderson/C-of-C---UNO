@@ -14,7 +14,7 @@ CARD_HEIGHT = 15
 # We need to make this customizable or at least more flexible
 USERHOME = str(os.getenv('HOME'))
 if USERHOME == "None":
-    USERHOME = os.getenv('USERPROFILE')
+   USERHOME = os.getenv('USERPROFILE')
 UNO_GAMES_DIR = USERHOME+"/Dropbox/UNO_Games/"
 
 def decode(input, shift=3):
@@ -35,7 +35,7 @@ def create_card(card_str):
         elif card_str == "wild draw 4":
             card = CARDS.WildCard()
             card.is_draw_4 = True
-
+            
     elif card_str.find("reverse") != -1:
         color = card_str.split(" ")[0]
         card = CARDS.ReverseCard(color)
@@ -73,7 +73,7 @@ class Player:
                 self.cards.remove
                 return card
         return None
-
+      
     #Looks through the player's hand to see if any card matches the top card of the
     #discard pile in color or number. If a card can be played, returns True
     #If no card can be played, returns False.
@@ -108,12 +108,12 @@ class Player:
         j = 0
         n = len(self.cards)
         for j in range(n):
-            key = self.cards.pop(j)
-            i = j - 1
-            while (i >= 0 and (self.cards[i].color > key.color or
-                               (self.cards[i].color == key.color and self.cards[i].number > key.number))):
-                i = i -1
-            self.cards.insert(i+1,key)
+           key = self.cards.pop(j)
+           i = j - 1
+           while (i >= 0 and (self.cards[i].color > key.color or
+                              (self.cards[i].color == key.color and self.cards[i].number > key.number))):
+              i = i -1
+           self.cards.insert(i+1,key)
 
 class Game:
     # Starts a new game with player 'name'
@@ -141,7 +141,7 @@ class Game:
             self.board.deal_one_card(self.p2)
             self.board.deal_one_card(self.p3)
             self.board.deal_one_card(self.p4)
-
+            
     # Starts the game
     # Displays the name of the player,
     # how many cards the player has in his/her hand,
@@ -169,7 +169,7 @@ class Game:
             self.board.set_p4(self.p3)
 
         self.save_game()
-
+        
         response = ""
         while response != None:
             response = self.board.wait_for_click()
@@ -187,7 +187,7 @@ class Game:
 
     #Reads an UNO game file with the player's cards and board
     def load_game(self,game_id):
-        infile = open(UNO_GAMES_DIR+str(game_id),"r")
+        infile = open(UNO_GAMES_DIR+str(game_id),"r")        
         # Load the players
         lines = decode(infile.read()).split("\n")
         infile.close()
@@ -195,7 +195,7 @@ class Game:
         self.p4 = Player(fields[0])
         for card_str in fields[1].split("\t"):
             self.p4.cards.append(create_card(card_str))
-
+            
         fields = lines[-2].split(":")
         self.p3 = Player(fields[0])
         for card_str in fields[1].split("\t"):
@@ -261,7 +261,7 @@ class Button:
         if x >= x1 and x <= x2 and y >= y1 and y <= y2:
             return True
         else:
-            return False
+            return False                    
 
 # Board class
 class Board:
@@ -305,7 +305,7 @@ class Board:
         self.create_discard_pile()
         self.discard_pile[-1].draw(self.win)
         self.discard_pile[-1].move_to(50,50)
-
+        
         self.card_selected = None
 
     #Opens and reads an old UNO game file and displays the old game
@@ -315,24 +315,24 @@ class Board:
         infile = open(UNO_GAMES_DIR+str(self.game_id),"r")
         lines = decode(infile.read()).split("\n")
         infile.close()
-
+        
         deck_strs = lines[2].split(":")[1].split("\t")
         self.deck = []
         for deck_str in deck_strs:
-            self.deck.append(create_card(deck_str))
+            self.deck.append(create_card(deck_str))            
 
         discard_pile_strs = lines[1].split(":")[1].split("\t")
         self.discard_pile = []
         for discard_pile_str in discard_pile_strs:
-            self.discard_pile.append(create_card(discard_pile_str))
-
+            self.discard_pile.append(create_card(discard_pile_str))                    
+        
         self.discard_pile[-1].draw(self.win)
         self.discard_pile[-1].move_to(50,50)
 
         self.card_selected = None
 
     #Removes one card from the deck and appends that card to the chosen player's hand
-    #Returns the drawn card
+    #Returns the drawn card        
     def deal_one_card(self,p):
         if len(self.deck) == 0:
             return None
@@ -341,12 +341,12 @@ class Board:
         p.cards.append(card)
         self.deck.remove(self.deck[i])
         return card
-
+        
     def check_card(self,discard_card,card_to_play):
         if discard_card.color == card_to_play.color or discard_card.number == card_to_play.number:
             return True
         return False
-
+   
     def can_play_card(self,player,discard_pile):
         discard_color = discard_pile[-1].color
         discard_number = discard_pile[-1].number
@@ -359,25 +359,25 @@ class Board:
         p = self.win.getMouse()
         # Check to see if card was clicked
         for card in self.p1.cards:
-            if card.is_clicked(p):
+             if card.is_clicked(p):
                 # Reset the card positions
                 for i in range(len(self.p1.cards)):
-                    self.p1.cards[i].move_to(self.x_positions[i],20)
-
+                   self.p1.cards[i].move_to(self.x_positions[i],20)
+                
                 card.move(0,5)
                 self.card_selected = card
                 return "Card Clicked"
 
         if self.discard_pile[-1].is_clicked(p):
-            if self.p1.name != self.cp.name:
+             if self.p1.name != self.cp.name:
                 return "Not your turn"
-            if self.card_selected != None:
-                if self.check_card(self.discard_pile[-1],self.card_selected):
+             if self.card_selected != None:
+                 if self.check_card(self.discard_pile[-1],self.card_selected):
                     self.discard_pile[-1].undraw()
                     self.card_selected.move_to(50,50)
                     self.p1.cards.remove(self.card_selected)
                     self.discard_pile.append(self.card_selected)
-                    self.card_selected = None
+                    self.card_selected = None                    
                     self.draw_cards()
                     # Switch to next person
                     time.sleep(1)
@@ -390,7 +390,7 @@ class Board:
                     self.text_p2.setText(self.p2.name + ": " + str(len(self.p2.cards)))
                     card.draw(self.win)
                     card.move_to(50,50)
-
+                     
                     time.sleep(1)
                     while self.p3.can_play_card(self.discard_pile) == False:
                         self.deal_one_card(self.p3)
@@ -415,13 +415,13 @@ class Board:
 
                     return "Card Played"
 
-            return "Discard Pile Clicked"
+             return "Discard Pile Clicked"
 
         elif self.draw_button.is_clicked(p):
             if self.can_play_card(self.p1,self.discard_pile) == False:
-                card = self.deal_one_card(self.p1)
-                self.draw_cards()
-
+                   card = self.deal_one_card(self.p1)
+                   self.draw_cards()
+            
             elif self.shift_button.is_clicked(p):
                 card = self.p1.cards[-1]
                 self.p1.cards.remove(self.p1.cards[-1])
@@ -468,8 +468,8 @@ class Board:
 ##            card = CARDS.WildCard()
 ##            card.is_draw_4 = True
 ##            deck.append(card)
-##
-##        # Makes Skips,Reverses, and Draw 2's
+##            
+##        # Makes Skips,Reverses, and Draw 2's 
 ##        for color in ['blue','green','red','yellow']:
 ##           card = CARDS.SkipCard(color)
 ##           deck.append(card)
@@ -483,7 +483,7 @@ class Board:
 ##           deck.append(card)
 ##           card = CARDS.Draw2Card(color)
 ##           deck.append(card)
-
+           
         self.deck = deck
 
     #Creates the discard pile
@@ -514,7 +514,7 @@ class Board:
             x_positions = list(range(50 - card_width_with_buffer*num_cards//2 + card_width_with_buffer//2,
                                      50 + card_width_with_buffer*num_cards//2 + card_width_with_buffer//2,
                                      card_width_with_buffer))
-
+            
         for i in range(len(p1.cards)):
             card = p1.cards[i]
             card.draw(self.win)
@@ -548,11 +548,11 @@ class Board:
 # Main loop of the program
 def main():
     global CARDS
-
+    
     if not os.path.exists(UNO_GAMES_DIR):
         MsgBox("Directory " + UNO_GAMES_DIR + " does not exist")
         return
-
+    
     # Log into the game, continue a game, or exit
     win = GraphWin("UNO",300,300)
     win.setCoords(0,0,100,100)
@@ -593,9 +593,9 @@ def main():
     UNO.append(O)
     UNO.append(punc)
     for text in UNO:
-        text.setStyle('bold italic')
-        text.setSize(35)
-        text.draw(win)
+       text.setStyle('bold italic')
+       text.setSize(35)
+       text.draw(win)
     start_new_game_button = Button(55,50,"Start New Game",win,50,10)
     continue_game_button = Button(55,25,"Continue/Join Game",win,50,10)
     Text(Point(12,60),"Name: ").draw(win)
@@ -623,41 +623,41 @@ def main():
         elif quit_button.is_clicked(p):
             win.close()
             return
-
+         
     # Pick the cards
     if cards_entry.getText().strip() == '1':
-        CARDS = cards1
+       CARDS = cards1
     elif cards_entry.getText().strip() == '2':
-        CARDS = cards2
+       CARDS = cards2
     elif cards_entry.getText().strip() == '3':
-        CARDS = cards3
+       CARDS = cards3
     elif cards_entry.getText().strip() == '4':
-        CARDS = cards4
+       CARDS = cards4
     elif cards_entry.getText().strip() == '5':
-        CARDS = cards5
+       CARDS = cards5
     elif cards_entry.getText().strip() == '6':
-        CARDS = cards6
+       CARDS = cards6
     elif cards_entry.getText().strip() == '7':
-        CARDS = cards7
+       CARDS = cards7
     elif cards_entry.getText().strip() == '8':
-        CARDS = cards8
+       CARDS = cards8
     elif cards_entry.getText().strip() == '9':
-        CARDS = cards9
+       CARDS = cards9
     elif cards_entry.getText().strip() == '10':
-        CARDS = cards10
+       CARDS = cards10
     elif cards_entry.getText().strip() == '11':
-        CARDS = cards11
+       CARDS = cards11
     elif cards_entry.getText().strip() == '12':
-        CARDS = cards12
+       CARDS = cards12
     elif cards_entry.getText().strip() == '13':
-        CARDS = cards13
+       CARDS = cards13
     elif cards_entry.getText().strip() == '14':
-        CARDS = cards14
+       CARDS = cards14
     elif cards_entry.getText().strip() == '15':
-        CARDS = cards15
+       CARDS = cards15
     else:
-        CARDS = cards1
-
+       CARDS = cards1
+       
     win.close()
 
     # Play the game
@@ -712,5 +712,5 @@ def main():
             player = game.p3
         elif player.name == game.p4.name:
             player = game.p4
-
+            
 main()
