@@ -4,7 +4,7 @@ from random import randint, shuffle
 
 # Authors: Paul Anderson, Clayton Turner, Patrick Brewer, Sam Alley, Scott Ziegler, Andy Stiles, Andrew Armstrong
 #Kate Harnage, Davida Mitchell, Kelsey Yetsko, Kenneth Hanson, Shane McCoy, Eric Marquesse Mathewes, Joey Randich, Jason Wilson,
-#Cyndi Driscoll, Thomas Briggs, Nelson Hazelbaker
+#Cyndi Driscoll, Thomas Briggs, Nelson Hazelbaker, Michael Gober
 # Vinson Mann, Caleb Whitaker
 
 from graphics import *
