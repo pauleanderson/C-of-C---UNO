@@ -3,7 +3,7 @@ from random import randint, shuffle
 #Kate Harnage, Davida Mitchell, Kelsey Yetsko, Kenneth Hanson, Shane McCoy, Eric Marquesse Mathewes, Joey Randich, Jason Wilson
 
 from graphics import *
-from string import ascii_letter
+from string import ascii_letters
 import cards1, cards2, cards3, cards4, cards5, cards6, cards7, cards8, cards9, cards10, cards11, cards12, cards13, cards14, cards15
 import time
 
