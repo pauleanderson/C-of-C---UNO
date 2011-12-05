@@ -57,6 +57,18 @@ class Player:
         self.name = name
         self.cards = []
 
+    def automatically_play_card(self,board,text_p):
+        time.sleep(1)
+        while self.can_play_card(board.discard_pile) == False:
+            board.deal_one_card(self)
+        board.discard_pile[-1].undraw()
+        card = self.get_card_to_play(board.discard_pile)
+        self.cards.remove(card)
+        board.discard_pile.append(card)
+        text_p.setText(self.name + ": " + str(len(self.cards)))
+        card.draw(board.win)
+        card.move_to(50,50)        
+
     #Player inputs color and number, and the functions searches
     #through the player's hand to find a card matching the color
     #and number, then removes the card from the hand and returns
@@ -347,13 +359,13 @@ class Board:
             return True
         return False
 
-    def can_play_card(self,player,discard_pile):
-        discard_color = discard_pile[-1].color
-        discard_number = discard_pile[-1].number
-        for card in player.cards:
-            if card.color == discard_color or card.number == discard_number:
-                return True
-        return False
+##    def can_play_card(self,player,discard_pile):
+##        discard_color = discard_pile[-1].color
+##        discard_number = discard_pile[-1].number
+##        for card in player.cards:
+##            if card.color == discard_color or card.number == discard_number:
+##                return True
+##        return False
 
     def wait_for_click(self):
         p = self.win.getMouse()
@@ -379,67 +391,41 @@ class Board:
                     self.discard_pile.append(self.card_selected)
                     self.card_selected = None
                     self.draw_cards()
+                    
                     # Switch to next person
-                    time.sleep(1)
-                    while self.p2.can_play_card(self.discard_pile) == False:
-                        self.deal_one_card(self.p2)
-                    self.discard_pile[-1].undraw()
-                    card = self.p2.get_card_to_play(self.discard_pile)
-                    self.p2.cards.remove(card)
-                    self.discard_pile.append(card)
-                    self.text_p2.setText(self.p2.name + ": " + str(len(self.p2.cards)))
-                    card.draw(self.win)
-                    card.move_to(50,50)
+                    self.p2.automatically_play_card(self,self.text_p2)
 
-                    time.sleep(1)
-                    while self.p3.can_play_card(self.discard_pile) == False:
-                        self.deal_one_card(self.p3)
-                    self.discard_pile[-1].undraw()
-                    card = self.p3.get_card_to_play(self.discard_pile)
-                    self.p3.cards.remove(card)
-                    self.discard_pile.append(card)
-                    self.text_p3.setText(self.p3.name + ": " + str(len(self.p3.cards)))
-                    card.draw(self.win)
-                    card.move_to(50,50)
+                    self.p3.automatically_play_card(self,self.text_p3)
 
-                    time.sleep(1)
-                    while self.p4.can_play_card(self.discard_pile) == False:
-                        self.deal_one_card(self.p4)
-                    self.discard_pile[-1].undraw()
-                    card = self.p4.get_card_to_play(self.discard_pile)
-                    self.p4.cards.remove(card)
-                    self.discard_pile.append(card)
-                    self.text_p4.setText(self.p4.name + ": " + str(len(self.p4.cards)))
-                    card.draw(self.win)
-                    card.move_to(50,50)
+                    self.p4.automatically_play_card(self,self.text_p4)
 
                     return "Card Played"
 
             return "Discard Pile Clicked"
 
         elif self.draw_button.is_clicked(p):
-            if self.can_play_card(self.p1,self.discard_pile) == False:
+            if self.p1.can_play_card(self.discard_pile) == False:
                 card = self.deal_one_card(self.p1)
                 self.draw_cards()
 
-            elif self.shift_button.is_clicked(p):
-                card = self.p1.cards[-1]
-                self.p1.cards.remove(self.p1.cards[-1])
-                self.p1.cards.insert(0,card)
-                self.draw_cards()
-                return "Shift Button Clicked"
+        elif self.shift_button.is_clicked(p):
+            card = self.p1.cards[-1]
+            self.p1.cards.remove(self.p1.cards[-1])
+            self.p1.cards.insert(0,card)
+            self.draw_cards()
+            return "Shift Button Clicked"
 
-            elif self.sort_button.is_clicked(p):
-                self.p1.sort()
-                self.draw_cards()
-                return "Sort Button Clicked"
+        elif self.sort_button.is_clicked(p):
+            self.p1.sort()
+            self.draw_cards()
+            return "Sort Button Clicked"
 
-            elif self.reload_button.is_clicked(p):
-                return "Reload Button Clicked"
+        elif self.reload_button.is_clicked(p):
+            return "Reload Button Clicked"
 
-            elif self.quit_button.is_clicked(p):
-                self.win.close()
-                return None
+        elif self.quit_button.is_clicked(p):
+            self.win.close()
+            return None
 
         return "Other Spot Clicked"
 
@@ -547,15 +533,11 @@ class Board:
 
 # Main loop of the program
 def main():
-    global CARDS
-
-    if not os.path.exists(UNO_GAMES_DIR):
-        MsgBox("Directory " + UNO_GAMES_DIR + " does not exist")
-        return
+    global CARDS, UNO_GAMES_DIR
 
     # Log into the game, continue a game, or exit
-    win = GraphWin("UNO",300,300)
-    win.setCoords(0,0,100,100)
+    win = GraphWin("UNO",400,400)
+    win.setCoords(0,-10,100,100)
     U = Text(Point(35,80),'U')
     N = Text(Point(50,80),'N')
     O = Text(Point(65,80),'O')
@@ -605,10 +587,13 @@ def main():
     Text(Point(15,35),"Game ID: ").draw(win)
     game_id_entry = Entry(Point(45,35),10)
     game_id_entry.draw(win)
-    Text(Point(10,5),"Cards: ").draw(win)
-    cards_entry = Entry(Point(30,5),5)
+    Text(Point(10,8),"Cards: ").draw(win)
+    cards_entry = Entry(Point(30,8),4)
     cards_entry.draw(win)
     cards_entry.setText('1')
+    dir_entry = Entry(Point(50,-4),40)
+    dir_entry.draw(win)
+    dir_entry.setText(UNO_GAMES_DIR)
     game_id = None
     # Loop until the user clicks on one of the buttons
     while True:
@@ -658,7 +643,14 @@ def main():
     else:
         CARDS = cards1
 
+    UNO_GAMES_DIR = dir_entry.getText()
+
     win.close()
+
+    # Check to see if the directory is available
+    if not os.path.exists(UNO_GAMES_DIR):
+        MsgBox("Directory " + UNO_GAMES_DIR + " does not exist")
+        return
 
     # Play the game
     game = Game()
