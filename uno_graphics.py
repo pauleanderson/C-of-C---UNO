@@ -145,6 +145,7 @@ class Game:
         self.board.initialize_new_board()
         self.deal()
         self.board.cp = self.p1
+        self.board.current_player_text.setText("Turn: "+self.board.cp.name)
 
     #Deals out 7 cards to each player
     def deal(self):
@@ -180,6 +181,7 @@ class Game:
             self.board.set_p3(self.p2)
             self.board.set_p4(self.p3)
 
+        self.board.current_player_text.setText("Turn: "+self.board.cp.name)
         self.save_game()
 
         response = ""
@@ -310,6 +312,9 @@ class Board:
         self.text_game_id = Text(Point(20,90),str(self.game_id))
         self.text_game_id.draw(self.win)
 
+        self.current_player_text = Text(Point(50,60),"Turn: Computer 1")
+        self.current_player_text.draw(self.win)
+
     #Creates the deck and discard pile
     def initialize_new_board(self):
         self.create_deck()
@@ -391,13 +396,38 @@ class Board:
                     self.discard_pile.append(self.card_selected)
                     self.card_selected = None
                     self.draw_cards()
+                    if len(self.p1.cards) == 0:
+                        MsgBox("And the winner is " + self.p1.name + "!")
+                        self.win.close()
+                        return None
                     
                     # Switch to next person
-                    self.p2.automatically_play_card(self,self.text_p2)
+                    if self.p2.name.find("Computer") == 0:
+                        self.p2.automatically_play_card(self,self.text_p2)
+                        if len(self.p2.cards) == 0:
+                            MsgBox("And the winner is " + self.p2.name + "!")
+                            self.win.close()
+                            return None
+                    else:
+                        self.cp = p2
+                        return "Card Played"
 
-                    self.p3.automatically_play_card(self,self.text_p3)
+                    if self.p3.name.find("Computer") == 0:
+                        self.p3.automatically_play_card(self,self.text_p3)
+                        if len(self.p3.cards) == 0:
+                            MsgBox("And the winner is " + self.p3.name + "!")
+                            self.win.close()
+                            return None
+                    else:
+                        self.cp = p3
+                        return "Card Played"
 
-                    self.p4.automatically_play_card(self,self.text_p4)
+                    if self.p4.name.find("Computer") == 0:
+                        self.p4.automatically_play_card(self,self.text_p4)
+                        if len(self.p4.cards) == 0:
+                            MsgBox("And the winner is " + self.p4.name + "!")
+                            self.win.close()
+                            return None
 
                     return "Card Played"
 
