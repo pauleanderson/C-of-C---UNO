@@ -2,7 +2,7 @@ from random import randint, shuffle
 
 # Authors:Pelin Akbiyik
 
-# Authors: Paul Anderson, Clayton Turner, Patrick Brewer, Scott Ziegler, Andy Stiles, Andrew Armstrong
+# Authors: Paul Anderson, Clayton Turner, Patrick Brewer, Sam Alley, Scott Ziegler, Andy Stiles, Andrew Armstrong
 #Kate Harnage, Davida Mitchell, Kelsey Yetsko, Kenneth Hanson, Shane McCoy, Eric Marquesse Mathewes, Joey Randich, Jason Wilson,
 #Cyndi Driscoll, Thomas Briggs, Nelson Hazelbaker
 # Vinson Mann
@@ -233,7 +233,8 @@ class Game:
 
         self.board = Board(game_id)
         self.board.load_old_board()
-
+        
+        #Adjusts to display the names of the players correctly
         cp_name = lines[0]
         if self.p1.name == cp_name:
             self.board.cp = self.p1
@@ -294,7 +295,7 @@ class Button:
         else:
             return False
 
-# Board class
+# Board class (Everything that has to do with displaying the game graphically)
 class Board:
     def __init__(self,game_id):
         self.game_id = game_id
@@ -313,12 +314,14 @@ class Board:
         self.text_p4 = Text(Point(90,50),'Computer 4: 0')
         self.text_p4.draw(self.win)
 
+        #Makes the discard pile
         self.rect_discard_pile = Rectangle(Point(80,80),Point(80+CARD_WIDTH,80+CARD_HEIGHT))
         self.rect_discard_pile.draw(self.win)
         self.rect_discard_pile.setFill('gray')
         self.text_discard_pile = Text(Point(80+CARD_WIDTH/2,80+CARD_HEIGHT/2),"Discard")
         self.text_discard_pile.draw(self.win)
 
+        #Makes the buttons
         self.quit_button = Button(10,90,"Quit",self.win,8,4)
         self.reload_button = Button(10,80,"Reload",self.win,12,4)
         self.uno_button = Button(20,2,"UNO",self.win,8,4)
