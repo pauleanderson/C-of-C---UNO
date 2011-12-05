@@ -190,7 +190,7 @@ class Game:
             if response == "Card Played":
                 self.save_game()
             elif response == "Reload Button Clicked":
-                return game_over
+                return response
         return None
 
     #Writes the game data in a file in the UNO_GAMES directory
@@ -228,6 +228,17 @@ class Game:
         self.board = Board(game_id)
         self.board.load_old_board()
 
+        cp_name = lines[0]
+        if self.p1.name == cp_name:
+            self.board.cp = self.p1
+        elif self.p2.name == cp_name:
+            self.board.cp = self.p2
+        elif self.p3.name == cp_name:
+            self.board.cp = self.p3
+        elif self.p4.name == cp_name:
+            self.board.cp = self.p4
+        self.board.current_player_text.setText(cp_name)
+            
     #I honestly do not know what this does
     def as_string(self):
         results = self.board.as_string()
@@ -333,12 +344,12 @@ class Board:
         lines = decode(infile.read()).split("\n")
         infile.close()
 
-        deck_strs = lines[2].split(":")[1].split("\t")
+        deck_strs = lines[3].split(":")[1].split("\t")
         self.deck = []
         for deck_str in deck_strs:
             self.deck.append(create_card(deck_str))
 
-        discard_pile_strs = lines[1].split(":")[1].split("\t")
+        discard_pile_strs = lines[2].split(":")[1].split("\t")
         self.discard_pile = []
         for discard_pile_str in discard_pile_strs:
             self.discard_pile.append(create_card(discard_pile_str))
@@ -402,6 +413,8 @@ class Board:
                         return None
                     
                     # Switch to next person
+                    self.cp = self.p2
+                    self.current_player_text.setText("Turn: "+self.cp.name)                        
                     if self.p2.name.find("Computer") == 0:
                         self.p2.automatically_play_card(self,self.text_p2)
                         if len(self.p2.cards) == 0:
@@ -409,9 +422,10 @@ class Board:
                             self.win.close()
                             return None
                     else:
-                        self.cp = p2
                         return "Card Played"
 
+                    self.cp = self.p3
+                    self.current_player_text.setText("Turn: "+self.cp.name)                        
                     if self.p3.name.find("Computer") == 0:
                         self.p3.automatically_play_card(self,self.text_p3)
                         if len(self.p3.cards) == 0:
@@ -419,11 +433,14 @@ class Board:
                             self.win.close()
                             return None
                     else:
-                        self.cp = p3
                         return "Card Played"
 
+                    self.cp = self.p4
+                    self.current_player_text.setText("Turn: "+self.cp.name)                        
                     if self.p4.name.find("Computer") == 0:
                         self.p4.automatically_play_card(self,self.text_p4)
+                        self.cp = self.p1
+                        self.current_player_text.setText("Turn: "+self.cp.name)                                            
                         if len(self.p4.cards) == 0:
                             MsgBox("And the winner is " + self.p4.name + "!")
                             self.win.close()
@@ -559,7 +576,7 @@ class Board:
         deck_results = []
         for card in self.deck:
             deck_results.append(card.as_string())
-        return str(self.game_id) + "\nDiscard pile:" + "\t".join(discard_pile_results) + "\n" + "Deck:" + "\t".join(deck_results)
+        return self.cp.name + "\n" + str(self.game_id) + "\nDiscard pile:" + "\t".join(discard_pile_results) + "\n" + "Deck:" + "\t".join(deck_results)
 
 # Main loop of the program
 def main():
