@@ -1,8 +1,9 @@
 from random import randint, shuffle
-# Authors: Paul Anderson, Clayton Turner, Patrick Brewer, Scott Ziegler, Andy Stiles, Kate Harnage, Davida Mitchell, Kelsey Yetsko, Kenneth Hanson
+# Authors: Paul Anderson, Clayton Turner, Patrick Brewer, Scott Ziegler, Andy Stiles, 
+#Kate Harnage, Davida Mitchell, Kelsey Yetsko, Kenneth Hanson, Eric Marquesse Mathewes,
 
 from graphics import *
-from string import ascii_letters
+from string import ascii_letter
 import cards1, cards2, cards3, cards4, cards5, cards6, cards7, cards8, cards9, cards10, cards11, cards12, cards13, cards14, cards15
 import time
 
