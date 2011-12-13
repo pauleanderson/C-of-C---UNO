@@ -4,8 +4,8 @@ from random import randint, shuffle
 
 # Authors: Paul Anderson, Clayton Turner, Patrick Brewer, Sam Alley, Scott Ziegler, Andy Stiles, Andrew Armstrong
 #Kate Harnage, Davida Mitchell, Kelsey Yetsko, Kenneth Hanson, Shane McCoy, Eric Marquesse Mathewes, Joey Randich, Jason Wilson,
-#Cyndi Driscoll, Thomas Briggs, Nelson Hazelbaker
-# Vinson Mann
+#Cyndi Driscoll, Thomas Briggs, Nelson Hazelbaker, Michael Gober
+# Vinson Mann, Caleb Whitaker, something
 
 from graphics import *
 from string import ascii_letters
@@ -371,8 +371,12 @@ class Board:
     #Removes one card from the deck and appends that card to the chosen player's hand
     #Returns the drawn card
     def deal_one_card(self,p):
+        #Makes sure the deck resets when it runs out of cards #### Andrew Armstrong
         if len(self.deck) == 0:
-            return None
+            temp_card = self.discard_pile[-1]
+            for i in range(len(self.discard_pile) - 1):
+                self.deck.append(create_card(self.discardpile[i].as_string()))
+            self.discard_pile = [temp_card]
         i = randint(0,len(self.deck)-1)
         card = self.deck[i]
         p.cards.append(card)
